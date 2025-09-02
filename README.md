@@ -1,2 +1,5 @@
 pnpm create vite smartcafe-frontend --template react-ts
-
+pnpm install
+pnpm install tailwindcss @tailwindcss/vite
+pnpm add react-router-dom
+pnpm add -D @types/node
