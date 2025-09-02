@@ -35,7 +35,7 @@ export default function Navbar({ sidebarOpen, onToggleSidebar }: Props) {
 
         <div className="hidden md:flex items-center gap-1">
           <NavLink
-            to="/"
+            to="/register"
             end
             className={({ isActive }) =>
               `${linkBase} ${isActive ? linkActive : linkInactive}`
@@ -44,7 +44,7 @@ export default function Navbar({ sidebarOpen, onToggleSidebar }: Props) {
             Register
           </NavLink>
           <NavLink
-            to="/dashboard"
+            to="/login"
             className={({ isActive }) =>
               `${linkBase} ${isActive ? linkActive : linkInactive}`
             }
