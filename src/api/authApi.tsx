@@ -1,31 +1,27 @@
 import { api } from "./axiosConfig";
 
+export type UserDTO = { id: number; name: string; email: string; role: "USER" | "BARISTA" };
 
-
-export type UserDTO = {
-  id: number;
-  name: string;
-  email: string;
+type LoginResp = {
+  token: string;
+  expires_in: string | number;
+  user?: UserDTO;
 };
 
-export type LoginResponse =
-  | { token: string; user: UserDTO }                 
-  | { data: { token: string; user: UserDTO } };     
-
 export async function loginApi(email: string, password: string) {
-  const res = await api.post<LoginResponse>("/authen", { email, password });
-  // รองรับทั้งสองรูปแบบ
-  const payload = "data" in res.data ? res.data.data : res.data;
-  return { token: payload.token, user: payload.user };
+  const res = await api.post<LoginResp>("/authen", { email, password });
+  return {
+    token: res.data.token,
+    expiresIn: res.data.expires_in,
+    user: res.data.user ?? null,
+  };
 }
 
-export type RegisterBody = { name: string; email: string; password: string; confirmPassword: string };
-export type RegisterResponse =
-  | { token: string; user: UserDTO }
-  | { data: { token: string; user: UserDTO } };
+
+type RegisterBody = { name: string; email: string; password: string };
+type RegisterResp = { message: string };
 
 export async function registerApi(body: RegisterBody) {
-  const res = await api.post<RegisterResponse>("/register", body);
-  const payload = "data" in res.data ? res.data.data : res.data;
-  return { token: payload.token, user: payload.user };
+  const res = await api.post<RegisterResp>("/register", body);
+  return res.data; 
 }

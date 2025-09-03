@@ -29,7 +29,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
         id="app-sidebar"
         data-state={open ? "open" : "closed"}
         className={`
-          fixed top-14 left-0 z-50 h-[calc(100vh-3.5rem)] w-72 border-r bg-white transition-transform
+          fixed top-14 left-0 z-50 h-[calc(100vh-3.5rem)] w-56 border-r bg-white transition-transform
           md:sticky md:top-14 md:translate-x-0
           ${open ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}

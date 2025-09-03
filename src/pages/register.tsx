@@ -32,7 +32,7 @@ function Register() {
         try {
             await register(name, email, password, confirmPassword);
             toast.success("Registration successful!");
-            nav("/", { replace: true });
+            nav("/login", { replace: true });
         } catch (e) {
             toast.error("Registration failed. Please try again.");
         } finally {
