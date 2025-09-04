@@ -18,7 +18,7 @@ export async function loginApi(email: string, password: string) {
 }
 
 
-type RegisterBody = { name: string; email: string; password: string };
+type RegisterBody = { name: string; email: string; password: string; confirmPassword: string };
 type RegisterResp = { message: string };
 
 export async function registerApi(body: RegisterBody) {

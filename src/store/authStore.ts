@@ -63,11 +63,7 @@ export const useAuthStore = create<AuthState>()(
 
 
       async register(name, email, password) {
-        // backend ส่งแค่ message
-        await registerApi({ name, email, password });
-        // ทางเลือก:
-        // 1) ให้ผู้ใช้ไป login เอง (แนะนำตอนนี้)
-        // 2) ถ้าอยาก auto-login และมี password อยู่ในฟอร์ม: await useAuthStore.getState().login(email, password);
+        await registerApi({ name, email, password, confirmPassword: password });
       },
 
       logout() {
