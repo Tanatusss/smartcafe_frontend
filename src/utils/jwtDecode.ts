@@ -4,8 +4,8 @@ type Payload = {
   id: number;
   email: string;
   name: string;
-  role: "USER" | "BARISTA" | "ADMIN";
-  exp?: number; // วินาที (Unix time)
+  role: "USER" | "BARISTA";
+  exp?: number; 
   iat?: number;
 };
 

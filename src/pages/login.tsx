@@ -2,6 +2,12 @@ import { Navigate, useNavigate, Link } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import { useState, type FormEvent } from "react";
 import { toast } from "react-toastify";
+import { signInSchema } from "../validators/auth.validator";
+
+type FieldErrors = {
+    email?: string;
+    password?: string;
+};
 
 function Login() {
     const { login, token, ready } = useAuthStore();
@@ -11,6 +17,7 @@ function Login() {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [errors, setErrors] = useState<FieldErrors>({});
 
     if (ready && token) return <Navigate to="/" replace />;
 
@@ -20,6 +27,19 @@ function Login() {
             toast.error("กรุณากรอกอีเมลและรหัสผ่าน");
             return;
         }
+
+        const result = signInSchema.safeParse({ email, password });
+        if (!result.success) {
+            const { fieldErrors } = result.error.flatten(
+                (issue) => issue.message //Zod รุ่นใหม่ (v3.23+) บังคับว่าห้ามว่าง
+            );
+            setErrors({
+                email: fieldErrors.email?.[0],
+                password: fieldErrors.password?.[0],
+            });
+            return;
+        }
+        setErrors({}); // ล้าง error
 
         setLoading(true);
         try {
@@ -44,34 +64,44 @@ function Login() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
             <div className="w-full max-w-md">
-                <div className="bg-white rounded-xl shadow-lg border p-6 sm:p-8">
-                    {/* Header */}
+                <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-sky-200/50 p-6 sm:p-8">
                     <div className="text-center mb-6">
-                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">เข้าสู่ระบบ</h1>
-                        <p className="text-sm sm:text-base text-gray-600 mt-2">Smart Cafe</p>
+                        <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-sky-700 to-blue-700 bg-clip-text text-transparent">
+                            เข้าสู่ระบบ
+                        </h1>
+                        <p className="text-sm sm:text-base text-slate-600 mt-2">Smart Cafe</p>
                     </div>
 
                     <form onSubmit={onSubmit} className="space-y-4">
                         {/* Email */}
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">
                                 อีเมล
                             </label>
                             <input
                                 id="email"
                                 type="email"
                                 value={email}
-                                onChange={e => setEmail(e.target.value)}
-                                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-colors text-sm sm:text-base"
+                                onChange={(e) => {
+                                    setEmail(e.target.value);
+                                    setErrors((prev) => ({ ...prev, email: undefined }));
+                                }}
+                                className={`w-full px-3 py-2.5 border rounded-xl focus:ring-2 outline-none transition-all duration-200 text-sm sm:text-base bg-white/50 backdrop-blur-sm ${errors.email
+                                    ? "border-red-400 focus:ring-red-400 focus:border-red-400"
+                                    : "border-sky-200 focus:ring-sky-400 focus:border-sky-400"
+                                    }`}
                                 placeholder="example@email.com"
                                 autoComplete="email"
                                 required
                             />
+                            {errors.email && (
+                                <p className="mt-1 text-xs text-red-600">{errors.email}</p>
+                            )}
                         </div>
 
                         {/* Password */}
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-1">
                                 รหัสผ่าน
                             </label>
                             <div className="relative">
@@ -79,8 +109,14 @@ function Login() {
                                     id="password"
                                     type={showPassword ? "text" : "password"}
                                     value={password}
-                                    onChange={e => setPassword(e.target.value)}
-                                    className="w-full px-3 py-2.5 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-colors text-sm sm:text-base"
+                                    onChange={(e) => {
+                                        setPassword(e.target.value);
+                                        setErrors((prev) => ({ ...prev, password: undefined }));
+                                    }}
+                                    className={`w-full px-3 py-2.5 pr-10 border rounded-xl focus:ring-2 outline-none transition-all duration-200 text-sm sm:text-base bg-white/50 backdrop-blur-sm ${errors.password
+                                        ? "border-red-400 focus:ring-red-400 focus:border-red-400"
+                                        : "border-sky-200 focus:ring-sky-400 focus:border-sky-400"
+                                        }`}
                                     placeholder="••••••••"
                                     autoComplete="current-password"
                                     required
@@ -88,7 +124,7 @@ function Login() {
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-sky-600 transition-colors"
                                 >
                                     {showPassword ? (
                                         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,13 +138,16 @@ function Login() {
                                     )}
                                 </button>
                             </div>
+                            {errors.password && (
+                                <p className="mt-1 text-xs text-red-600">{errors.password}</p>
+                            )}
                         </div>
 
                         {/* Submit Button */}
                         <button
                             type="submit"
                             disabled={loading || !email || !password}
-                            className="w-full bg-black text-white py-2.5 px-4 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-900 transition-colors text-sm sm:text-base"
+                            className="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white py-2.5 px-4 rounded-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-sm sm:text-base shadow-lg hover:shadow-xl"
                         >
                             {loading ? (
                                 <div className="flex items-center justify-center gap-2">
@@ -123,11 +162,11 @@ function Login() {
 
                     {/* Footer */}
                     <div className="mt-6 text-center">
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-slate-600">
                             ยังไม่มีบัญชี?{" "}
                             <Link
                                 to="/register"
-                                className="font-medium text-black hover:underline"
+                                className="font-medium bg-gradient-to-r from-sky-600 to-blue-600 bg-clip-text text-transparent hover:from-sky-700 hover:to-blue-700 transition-all duration-200"
                             >
                                 สมัครสมาชิก
                             </Link>
@@ -139,9 +178,10 @@ function Login() {
                 <div className="text-center mt-6">
                     <Link
                         to="/"
-                        className="text-sm text-gray-600 hover:text-black transition-colors"
+                        className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-sky-700 transition-colors duration-200 bg-white/50 backdrop-blur-sm px-4 py-2 rounded-xl border border-sky-200/50 hover:bg-white/70"
                     >
-                        ← กลับหน้าแรก
+
+                        กลับหน้าแรก
                     </Link>
                 </div>
             </div>

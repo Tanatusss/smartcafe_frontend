@@ -17,8 +17,8 @@ export default function Dashboard() {
       setLoading(true);
       const data = await getAllOrders();
       setOrders(Array.isArray(data) ? data : []);
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      console.error(error);
       toast.error("โหลดรายการออร์เดอร์ไม่สำเร็จ");
     } finally {
       setLoading(false);
@@ -29,21 +29,21 @@ export default function Dashboard() {
     load();
   }, []);
 
-  const handleReady = async (o: AllOrdersResp) => {
-    if (["ready", "completed", "canceled"].includes(o.status)) return;
+  const handleReady = async (order: AllOrdersResp) => {
+    if (["ready", "completed", "canceled"].includes(order.status)) return;
     try {
-      setBusy(o.order_id);
-      const updated = await markOrderReady(o.order_id);
+      setBusy(order.order_id);
+      const updated = await markOrderReady(order.order_id);
       setOrders((prev) =>
         prev.map((x) =>
-          x.order_id === o.order_id
+          x.order_id === order.order_id
             ? { ...x, status: updated.status, completed_at: updated.completed_at }
             : x
         )
       );
-      toast.success(`ออร์เดอร์ #${o.order_id} เปลี่ยนเป็น READY`);
-    } catch (e) {
-      console.error(e);
+      toast.success(`ออร์เดอร์ #${order.order_id} เปลี่ยนเป็น READY`);
+    } catch (error) {
+      console.error(error);
       toast.error("อัปเดตไม่สำเร็จ");
     } finally {
       setBusy(null);

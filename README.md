@@ -1,4 +1,7 @@
 
+
+
+
 pnpm create vite smartcafe-frontend --template react-ts
 pnpm install
 pnpm install tailwindcss @tailwindcss/vite
@@ -8,3 +11,5 @@ pnpm add zustand
 pnpm add axios
 pnpm add react-toastify
 pnpm add jwt-decode
+pnpm add zod react-hook-form @hookform/resolvers
+

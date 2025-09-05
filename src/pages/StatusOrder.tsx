@@ -48,8 +48,8 @@ export default function StatusOrder() {
       const data = await getOrderStatus(idNum);
       setOrderData(data);
       setShowModal(true);
-    } catch (e: any) {
-      setError(e?.response?.data?.message ?? e?.message ?? "ไม่พบข้อมูลออร์เดอร์");
+    } catch (error: any) {
+      setError(error?.response?.data?.message ?? error?.message ?? "ไม่พบข้อมูลออร์เดอร์");
       setOrderData(null);
     } finally {
       setLoading(false);
@@ -72,8 +72,8 @@ export default function StatusOrder() {
       <div className="space-y-6">
         {/* Header */}
         <header className="space-y-2">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">ติดตามสถานะออร์เดอร์</h1>
-          <p className="text-sm sm:text-base text-gray-600">ใส่หมายเลขออร์เดอร์เพื่อตรวจสอบสถานะ</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">ติดตามสถานะออเดอร์</h1>
+          <p className="text-sm sm:text-base text-gray-600">ใส่หมายเลขออเดอร์เพื่อตรวจสอบสถานะ</p>
         </header>
 
         {/* Search Section */}
@@ -81,15 +81,15 @@ export default function StatusOrder() {
           <div className="space-y-4">
             <div>
               <label htmlFor="orderId" className="block text-sm font-medium text-gray-700 mb-2">
-                หมายเลขออร์เดอร์
+                หมายเลขออเดอร์
               </label>
               <div className="flex flex-col sm:flex-row gap-3">
                 <input
                   id="orderId"
                   type="number"
                   value={orderId}
-                  onChange={(e) => setOrderId(e.target.value)}
-                  onKeyPress={handleKeyPress}
+                  onChange={(error) => setOrderId(error.target.value)}
+                  onKeyDown={handleKeyPress}
                   placeholder="กรุณาใส่หมายเลขออร์เดอร์"
                   className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-colors text-sm sm:text-base"
                 />
@@ -115,9 +115,9 @@ export default function StatusOrder() {
         <div className="bg-blue-50 rounded-xl border border-blue-200 p-6">
           <h3 className="text-lg font-medium text-blue-900 mb-2">วิธีใช้งาน</h3>
           <ul className="text-sm text-blue-800 space-y-1">
-            <li>• ใส่หมายเลขออร์เดอร์ที่ได้รับหลังจากสั่งซื้อ</li>
+            <li>• ใส่หมายเลขออเดอร์ที่ได้รับหลังจากสั่งซื้อ</li>
             <li>• กดปุ่ม "ตรวจสอบสถานะ" หรือกด Enter</li>
-            <li>• ระบบจะแสดงรายละเอียดและสถานะปัจจุบันของออร์เดอร์</li>
+            <li>• ระบบจะแสดงรายละเอียดและสถานะปัจจุบันของออเดอร์</li>
           </ul>
         </div>
       </div>
@@ -129,7 +129,7 @@ export default function StatusOrder() {
             {/* Modal Header */}
             <div className="p-6 border-b flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <h2 className="text-xl font-semibold text-gray-900">ออร์เดอร์ #{orderId}</h2>
+                <h2 className="text-xl font-semibold text-gray-900">ออเดอร์ #{orderId}</h2>
                 <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(orderData.status)}`}>
                   {orderData.status}
                 </div>
@@ -191,12 +191,12 @@ export default function StatusOrder() {
 
               {/* Status Timeline */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">สถานะออร์เดอร์</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">สถานะออเดอร์</h3>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
                     <div className="w-3 h-3 rounded-full bg-green-500 flex-shrink-0"></div>
                     <div className="flex-1 flex justify-between items-center">
-                      <span className="text-sm text-gray-700">รับออร์เดอร์แล้ว</span>
+                      <span className="text-sm text-gray-700">รับออเดอร์แล้ว</span>
                       <span className="text-xs text-gray-500">
                         {new Date(orderData.created_at).toLocaleString('th-TH')}
                       </span>

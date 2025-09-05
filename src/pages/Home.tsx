@@ -5,7 +5,7 @@ import { createOrder, getOrderStatus } from "../api/orderApi";
 import type { OrderItemReq } from "../api/orderApi";
 import { fetchToppings, type ToppingDTO } from "../api/toppingApi";
 
-/** ---------- utils ---------- */
+//  ---------- utils ---------- 
 const formatTHB = (n: number) =>
   new Intl.NumberFormat("th-TH", { style: "currency", currency: "THB", maximumFractionDigits: 0 }).format(n);
 
@@ -14,7 +14,7 @@ const keyOf = (itemId: number, toppingIds: number[]) => {
   return `${itemId}__${sorted.join("_")}`;
 };
 
-/** ---------- types (local UI) ---------- */
+//  ---------- types ---------- 
 type CartLine = {
   key: string;
   item_id: number;
@@ -70,8 +70,8 @@ export default function Home() {
         const [m, t] = await Promise.all([fetchMenu(), fetchToppings()]);
         setMenu(m);
         setTops(t);
-      } catch (e: any) {
-        setErr(e?.message ?? "โหลดข้อมูลล้มเหลว");
+      } catch (error: any) {
+        setErr(error?.message ?? "โหลดข้อมูลล้มเหลว");
       } finally {
         setLoading(false);
       }
@@ -108,22 +108,22 @@ export default function Home() {
     });
   };
 
-  const inc = (k: string) => setCart((c) => ({ ...c, [k]: { ...c[k], qty: c[k].qty + 1 } }));
-  const dec = (k: string) =>
-    setCart((c) => {
-      const line = c[k];
-      if (!line) return c;
+  const increase = (key: string) => setCart((value) => ({ ...value, [key]: { ...value[key], qty: value[key].qty + 1 } }));
+  const decrease = (key: string) =>
+    setCart((cart) => {
+      const line = cart[key];
+      if (!line) return cart;
       if (line.qty <= 1) {
-        const { [k]: _, ...rest } = c;
+        const { [key]: _, ...rest } = cart;
         return rest;
       }
-      return { ...c, [k]: { ...line, qty: line.qty - 1 } };
+      return { ...cart, [key]: { ...line, qty: line.qty - 1 } };
     });
 
   const clearCart = () => setCart({});
 
   const total = useMemo(
-    () => Object.values(cart).reduce((s, l) => s + l.unitPrice * l.qty, 0),
+    () => Object.values(cart).reduce((sum, line) => sum + line.unitPrice * line.qty, 0),
     [cart]
   );
 
@@ -145,23 +145,23 @@ export default function Home() {
     setPlacing(true);
     setErr(null);
     try {
-      // snapshot cart สำหรับ modal
+     
       const cartLines = Object.values(cart);
 
-      const itemsForReq: OrderItemReq[] = cartLines.map((l) => ({
-        item_id: l.item_id,
-        qty: l.qty,
-        toppings: l.toppingIds,
+      const itemsForReq: OrderItemReq[] = cartLines.map((line) => ({
+        item_id: line.item_id,
+        qty: line.qty,
+        toppings: line.toppingIds,
       }));
 
-      const linesForModal: SuccessItem[] = cartLines.map((l) => ({
-        name: l.name,
-        qty: l.qty,
+      const linesForModal: SuccessItem[] = cartLines.map((line) => ({
+        name: line.name,
+        qty: line.qty,
         toppings:
-          l.toppingIds.length > 0
-            ? l.toppingIds.map((id) => tops.find((t) => t.id === id)?.name ?? String(id)).join(", ")
+          line.toppingIds.length > 0
+            ? line.toppingIds.map((id) => tops.find((topping) => topping.id === id)?.name ?? String(id)).join(", ")
             : "ไม่มี",
-        lineTotal: l.unitPrice * l.qty,
+        lineTotal: line.unitPrice * line.qty,
       }));
 
       const resp = await createOrder({ items: itemsForReq });
@@ -177,8 +177,8 @@ export default function Home() {
       clearCart();
       setStatus(null);
       setTrack(String(resp.order_id));
-    } catch (e: any) {
-      setErr(e?.response?.data?.message ?? e?.message ?? "สั่งซื้อไม่สำเร็จ");
+    } catch (error: any) {
+      setErr(error?.response?.data?.message ?? error?.message ?? "สั่งซื้อไม่สำเร็จ");
     } finally {
       setPlacing(false);
     }
@@ -199,9 +199,9 @@ export default function Home() {
         .filter(Boolean)
         .join(" • ");
       setStatus(text);
-    } catch (e: any) {
+    } catch (error: any) {
       setStatus(null);
-      setErr(e?.response?.data?.message ?? e?.message ?? "ดึงสถานะไม่สำเร็จ");
+      setErr(error?.response?.data?.message ?? error?.message ?? "ดึงสถานะไม่สำเร็จ");
     }
   };
 
@@ -222,18 +222,18 @@ export default function Home() {
       {!loading && !err && (
         <div className="lg:col-span-2">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-            {menu.map((m) => (
-              <article key={m.item_id} className="border rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
-                <img src={m.img} alt={m.name} className="h-32 sm:h-40 w-full object-cover" />
+            {menu.map((menuItem) => (
+              <article key={menuItem.item_id} className="border rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
+                <img src={menuItem.img} alt={menuItem.name} className="h-32 sm:h-40 w-full object-cover" />
                 <div className="p-3 space-y-2">
                   <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-semibold text-sm sm:text-base line-clamp-2">{m.name}</h3>
-                    <div className="font-medium text-sm sm:text-base whitespace-nowrap">{formatTHB(m.price)}</div>
+                    <h3 className="font-semibold text-sm sm:text-base line-clamp-2">{menuItem.name}</h3>
+                    <div className="font-medium text-sm sm:text-base whitespace-nowrap">{formatTHB(menuItem.price)}</div>
                   </div>
                   <div className="flex items-center justify-end">
                     <button
                       className="w-full sm:w-auto px-3 py-1.5 rounded-md border hover:bg-gray-50 text-sm transition-colors"
-                      onClick={() => openPicker(m)}
+                      onClick={() => openPicker(menuItem)}
                     >
                       เลือกท็อปปิ้ง
                     </button>
@@ -252,30 +252,30 @@ export default function Home() {
           <div className="text-sm text-gray-500 text-center py-4">ยังไม่มีสินค้าในตะกร้า</div>
         ) : (
           <div className="space-y-3 max-h-60 sm:max-h-80 overflow-y-auto">
-            {Object.values(cart).map((l) => (
+            {Object.values(cart).map((lineItem) => (
               <div
-                key={l.key}
+                key={lineItem.key}
                 className="flex gap-3 p-2 border rounded-lg"
               >
                 {/* ซ้าย: รูปสินค้า */}
                 <img
-                  src={l.img}
+                  src={lineItem.img}
                   alt=""
                   className="h-12 w-12 sm:h-14 sm:w-14 object-cover rounded-md flex-shrink-0"
                 />
 
                 {/* กลาง: รายละเอียดสินค้า */}
                 <div className="flex-1 min-w-0">
-                  <div className="font-medium text-sm sm:text-base truncate">{l.name}</div>
+                  <div className="font-medium text-sm sm:text-base truncate">{lineItem.name}</div>
                   <div className="text-xs text-gray-500 line-clamp-2">
-                    {l.toppingIds.length > 0
-                      ? `ท็อปปิ้ง: ${l.toppingIds
-                        .map((id) => tops.find((t) => t.id === id)?.name ?? id)
+                    {lineItem.toppingIds.length > 0
+                      ? `ท็อปปิ้ง: ${lineItem.toppingIds
+                        .map((id) => tops.find((topping) => topping.id === id)?.name ?? id)
                         .join(", ")}`
                       : "ไม่มีท็อปปิ้ง"}
                   </div>
                   <div className="text-xs sm:text-sm text-gray-600 mt-1">
-                    {formatTHB(l.unitPrice)} × {l.qty}
+                    {formatTHB(lineItem.unitPrice)} × {lineItem.qty}
                   </div>
                 </div>
 
@@ -284,20 +284,20 @@ export default function Home() {
                   <div className="flex items-center gap-1">
                     <button
                       className="h-6 w-6 sm:h-7 sm:w-7 rounded border text-xs flex items-center justify-center hover:bg-gray-50"
-                      onClick={() => dec(l.key)}
+                      onClick={() => decrease(lineItem.key)}
                     >
                       -
                     </button>
-                    <span className="w-6 sm:w-8 text-center text-sm">{l.qty}</span>
+                    <span className="w-6 sm:w-8 text-center text-sm">{lineItem.qty}</span>
                     <button
                       className="h-6 w-6 sm:h-7 sm:w-7 rounded border text-xs flex items-center justify-center hover:bg-gray-50"
-                      onClick={() => inc(l.key)}
+                      onClick={() => increase(lineItem.key)}
                     >
                       +
                     </button>
                   </div>
                   <div className="font-semibold text-sm whitespace-nowrap">
-                    {formatTHB(l.unitPrice * l.qty)}
+                    {formatTHB(lineItem.unitPrice * lineItem.qty)}
                   </div>
                 </div>
               </div>
@@ -359,19 +359,19 @@ export default function Home() {
               <div className="space-y-3">
                 <div className="text-sm text-gray-600">ท็อปปิ้ง</div>
                 <div className="space-y-2 max-h-48 overflow-auto">
-                  {tops.map((t) => {
-                    const checked = pickTopIds.includes(t.id);
+                  {tops.map((topping) => {
+                    const checked = pickTopIds.includes(topping.id);
                     return (
-                      <label key={t.id} className="flex items-center justify-between border rounded-md px-3 py-2.5 cursor-pointer hover:bg-gray-50">
-                        <span className="flex-1 text-sm">{t.name}</span>
+                      <label key={topping.id} className="flex items-center justify-between border rounded-md px-3 py-2.5 cursor-pointer hover:bg-gray-50">
+                        <span className="flex-1 text-sm">{topping.name}</span>
                         <div className="flex items-center gap-3">
-                          <span className="text-sm text-gray-600">{formatTHB(t.price)}</span>
+                          <span className="text-sm text-gray-600">{formatTHB(topping.price)}</span>
                           <input
                             type="checkbox"
                             checked={checked}
                             onChange={(e) =>
                               setPickTopIds((ids) =>
-                                e.target.checked ? [...ids, t.id] : ids.filter((x) => x !== t.id)
+                                e.target.checked ? [...ids, topping.id] : ids.filter((x) => x !== topping.id)
                               )
                             }
                             className="h-4 w-4"
@@ -387,14 +387,14 @@ export default function Home() {
                   <div className="flex items-center gap-2">
                     <button 
                       className="h-8 w-8 rounded-md border flex items-center justify-center hover:bg-gray-50" 
-                      onClick={() => setPickQty((q) => Math.max(1, q - 1))}
+                      onClick={() => setPickQty((quantity) => Math.max(1, quantity - 1))}
                     >
                       -
                     </button>
                     <span className="w-8 text-center">{pickQty}</span>
                     <button 
                       className="h-8 w-8 rounded-md border flex items-center justify-center hover:bg-gray-50" 
-                      onClick={() => setPickQty((q) => q + 1)}
+                      onClick={() => setPickQty((quantity) => quantity + 1)}
                     >
                       +
                     </button>
@@ -435,7 +435,7 @@ export default function Home() {
             <div className="p-4 flex-1 overflow-auto">
               <div className="space-y-4">
                 <div className="text-sm text-gray-700 bg-green-50 p-3 rounded-lg">
-                  หมายเลขออร์เดอร์: <b>{success.orderId}</b>
+                  หมายเลขออเดอร์: <b>{success.orderId}</b>
                 </div>
 
                 <div className="space-y-3">
