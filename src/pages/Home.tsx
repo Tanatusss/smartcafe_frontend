@@ -223,7 +223,7 @@ export default function Home() {
         <div className="lg:col-span-2">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
             {menu.map((menuItem) => (
-              <article key={menuItem.item_id} className="border rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
+              <div key={menuItem.item_id} className="border rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
                 <img src={menuItem.img} alt={menuItem.name} className="h-32 sm:h-40 w-full object-cover" />
                 <div className="p-3 space-y-2">
                   <div className="flex items-start justify-between gap-2">
@@ -239,7 +239,7 @@ export default function Home() {
                     </button>
                   </div>
                 </div>
-              </article>
+              </div>
             ))}
           </div>
         </div>

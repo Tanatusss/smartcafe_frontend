@@ -1,0 +1,35 @@
+# SmartCafé — Backend
+
+Tech Stack
+-React, Vite , TypeScript
+-Tailwind CSS
+-Zustand, React Hook Form, Zod
+-React Router
+-Axios
+-React-toastify 
+-zod (validate)
+
+
+Development
+-git clone https://github.com/Tanatusss/smartcafe_frontend.git
+-cd smartcafe_frontend
+-pnpm i
+-pnpm dev
+
+Browser defaul : http://localhost:5173
+
+
+
+
+
+pnpm create vite smartcafe-frontend --template react-ts
+pnpm install
+pnpm install tailwindcss @tailwindcss/vite
+pnpm add react-router-dom
+pnpm add -D @types/node
+pnpm add zustand
+pnpm add axios
+pnpm add react-toastify
+pnpm add jwt-decode
+pnpm add zod react-hook-form @hookform/resolvers
+
