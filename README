@@ -3,10 +3,11 @@
 Tech Stack
 -React, Vite , TypeScript
 -Tailwind CSS
--Zustand, React Hook Form, Zod
--React Router
--Axios
--React-toastify 
+-Zustand (global state)
+-React Hook Form (validate in form)
+-React Router (routing)
+-Axios (API connect to backend)
+-React-toastify (Toast Notification)
 -zod (validate)
 
 
@@ -16,9 +17,12 @@ Development
 -pnpm i
 -pnpm dev
 
-Browser defaul : http://localhost:5173
+Browser default : http://localhost:5173
 
 
+Role
+-USER
+-BARRISTA (ถึงจะสามารถเข้าถึงหน้าDASH BOARD)
 
 
 

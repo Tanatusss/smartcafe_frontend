@@ -5,7 +5,7 @@ import { useState } from "react";
 
 
 export default function AppLayout() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false); 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar 

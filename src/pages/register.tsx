@@ -22,12 +22,17 @@ function Register() {
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    // เก็บ error ราย field หลัง validate ด้วย zod
     const [errors, setErrors] = useState<FieldErrors>({});
 
+    // ถ้า rehydrate storage เสร็จ (ready) และมี token แล้ว → redirect ออกไปหน้าแรก
     if (ready && token) return <Navigate to="/" replace />;
 
     async function onSubmit(e: FormEvent) {
         e.preventDefault();
+
+        // validate ด้วย zod
         const result = signUpSchema.safeParse({ name, email, password, confirmPassword });
         if (!result.success) {
             const { fieldErrors } = result.error.flatten(
@@ -56,6 +61,8 @@ function Register() {
         }
     }
 
+
+    // ระหว่างที่ยัง rehydrate store ไม่เสร็จ แสดง loading (กัน UI กระพริบ)
     if (!ready) {
         return (
             <div className="min-h-screen flex items-center justify-center">

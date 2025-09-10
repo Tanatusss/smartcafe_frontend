@@ -12,18 +12,20 @@ const linkActive = "bg-sky-100 text-sky-800 shadow-sm";
 const linkInactive = "text-slate-600 hover:bg-sky-50 hover:text-sky-700";
 
 export default function Navbar({ sidebarOpen, onToggleSidebar }: Props) {
+
+  // ดึง token, user, logout จาก store
   const token = useAuthStore((s) => s.token);
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
 
   const isAuthed = Boolean(token);
   const displayName = user?.name || user?.email || "Account";
-  const initial = displayName.charAt(0).toUpperCase();
+  const initial = displayName.charAt(0).toUpperCase();// เอาตัวอักษรแรกมาแสดงใน avatar
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement | null>(null);
-  const mobileMenuRef = useRef<HTMLDivElement | null>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null); // ref ของ desktop dropdown
+  const mobileMenuRef = useRef<HTMLDivElement | null>(null); // ref ของ mobile dropdown
 
   // ปิดเมนูเมื่อคลิกข้างนอก
   useEffect(() => {
@@ -65,6 +67,7 @@ export default function Navbar({ sidebarOpen, onToggleSidebar }: Props) {
             {/* Coffee Icon */}
             <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-sky-400 to-blue-500 rounded-lg shadow-sm group-hover:shadow-md transition-shadow">
               <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                {/* path ทำเป็นรูปเครื่องกาแฟ */}
                 <path d="M4 3a1 1 0 000 2h1v2a4 4 0 008 0V5h1a1 1 0 100-2H4zM6 7V5h8v2a2 2 0 11-4 0V5H8v2a2 2 0 01-2 0z"/>
                 <path d="M4 11a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM5 14a1 1 0 100 2h6a1 1 0 100-2H5z"/>
               </svg>
@@ -98,6 +101,7 @@ export default function Navbar({ sidebarOpen, onToggleSidebar }: Props) {
               </NavLink>
             </>
           ) : (
+            // ถ้า login แล้ว → แสดง avatar + dropdown
             <div ref={menuRef} className="relative">
               <button
                 type="button"

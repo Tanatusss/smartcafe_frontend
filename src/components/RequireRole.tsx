@@ -2,7 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 
 type Props = {
-  role: string; // เช่น "BARISTA"
+  role: string; // เช่น "BARISTA" || "USER""
 };
 
 export default function RequireRole({ role }: Props) {

@@ -8,9 +8,9 @@ import {
 } from "../api/orderApi";
 
 export default function Dashboard() {
-  const [orders, setOrders] = useState<AllOrdersResp[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [busy, setBusy] = useState<number | null>(null);
+  const [orders, setOrders] = useState<AllOrdersResp[]>([]); // รายการออร์เดอร์
+  const [loading, setLoading] = useState(false); // โหลดรายการทั้งหมดอยู่ไหม
+  const [busy, setBusy] = useState<number | null>(null); // order_id ที่กำลังอัปเดตสถานะอยู่
 
   const load = async () => {
     try {
@@ -60,7 +60,7 @@ export default function Dashboard() {
           : "bg-yellow-100 text-yellow-700";
 
   return (
-    // ชดเชยพื้นที่ Sidebar บนจอ md+
+    // ชดเชยพื้นที่ Sidebar บนจอ
     <div className="px-4 py-6 md:ml-56">
       <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
