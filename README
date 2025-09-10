@@ -1,4 +1,4 @@
-# SmartCafé — Backend
+# SmartCafé — Frontend
 
 Tech Stack
 -React, Vite , TypeScript
@@ -19,11 +19,13 @@ Development
 
 Browser default : http://localhost:5173
 
-
 Role
 -USER
 -BARRISTA (ถึงจะสามารถเข้าถึงหน้าDASH BOARD)
 
+Role
+-USER
+-BARRISTA (ถึงจะสามารถเข้าถึงหน้าDASH BOARD)
 
 
 pnpm create vite smartcafe-frontend --template react-ts
